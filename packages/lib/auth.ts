@@ -131,7 +131,6 @@ const CustomPrismaProvider = (req: NextApiRequest) => (p: PrismaClient) => {
 export const authOptions = (req: NextApiRequest): AuthOptions => {
   const hostname = req.headers.host;
   const rootDomain = getRootDomain(hostname!);
-
   return {
     adapter: CustomPrismaProvider(req)(prisma) as any,
     cookies: {
@@ -181,6 +180,7 @@ export const authOptions = (req: NextApiRequest): AuthOptions => {
     callbacks: {
       async session(props) {
         const { session, trigger, newSession, token } = props;
+
         const user = props.user as AdapterUser &
           Prisma.UserGetPayload<{ include: typeof sessionUserInclude }> & {
             sessionId: string;
@@ -351,7 +351,7 @@ export const formatOrganizationSession = (
   };
 };
 
-const handleGetSession = async (
+export const handleGetSession = async (
   req: AppNextApiRequest,
   res: NextApiResponse
 ) => {
@@ -405,6 +405,7 @@ const auth: Middleware<AppNextApiRequest, NextApiResponse> = async (
 
   return next();
 };
+
 export const optionalAuth: Middleware<
   AppNextApiRequest,
   NextApiResponse

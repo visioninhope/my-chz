@@ -884,6 +884,9 @@ enum DatasourceType {
   qa
   youtube_video
   youtube_bulk
+  shopify
+  shopify_collection
+  shopify_product
 }
 
 enum ServiceProviderType {
@@ -893,6 +896,7 @@ enum ServiceProviderType {
   crisp
   slack
   zendesk
+  shopify
   // smtp
 }
 

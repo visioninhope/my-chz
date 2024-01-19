@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 
+import ShopifySettingsModal from '@app/components/ShopifySettingsModal';
 import useAgent from '@app/hooks/useAgent';
 import useModal from '@app/hooks/useModal';
 import useStateReducer from '@app/hooks/useStateReducer';
@@ -74,12 +75,14 @@ function AgentDeployTab(props: Props) {
     isSlackModalOpen: false,
     isUsageModalOpen: false,
     isCrispModalOpen: false,
+    isShopifyModalOpen: false,
   });
 
   const bubbleWidgetModal = useModal();
   const iframeWidgetModal = useModal();
   const standalonePageModal = useModal();
   const zendeskModal = useModal();
+  const shopifyModal = useModal();
 
   const { query, mutation } = useAgent({
     id: props.agentId as string,
@@ -195,6 +198,22 @@ function AgentDeployTab(props: Props) {
               isPremium: true,
               action: () => {
                 setState({ isSlackModalOpen: true });
+              },
+            },
+            {
+              name: 'Shopify',
+              icon: (
+                <Image
+                  className="w-8"
+                  src="/shopify-logo.png"
+                  width={100}
+                  height={100}
+                  alt="shopify logo"
+                ></Image>
+              ),
+              isPremium: true,
+              action: () => {
+                setState({ isShopifyModalOpen: true });
               },
             },
             {
@@ -321,6 +340,12 @@ function AgentDeployTab(props: Props) {
             agentId={query?.data?.id!}
             isOpen={state.isCrispModalOpen}
             handleCloseModal={() => setState({ isCrispModalOpen: false })}
+          />
+
+          <ShopifySettingsModal
+            isOpen={state.isShopifyModalOpen}
+            handleCloseModal={() => setState({ isShopifyModalOpen: false })}
+            agentId={props.agentId}
           />
 
           <bubbleWidgetModal.component
