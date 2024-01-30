@@ -52,6 +52,11 @@ export const chatAgentRequest = async (
   const isDashboardMessage =
     channel === ConversationChannel.dashboard && !!session?.user?.id;
   const visitorId = data.visitorId || cuid();
+  const hasContactInfo =
+    data?.contact?.id ||
+    data?.contact?.externalId ||
+    data?.contact?.email ||
+    data?.contact?.phoneNumber;
 
   if (data.isDraft && !session?.organization?.id) {
     throw new ApiError(ApiErrorType.UNAUTHORIZED);
@@ -113,6 +118,45 @@ export const chatAgentRequest = async (
               },
             },
           },
+          ...(hasContactInfo
+            ? {
+                contacts: {
+                  take: 1,
+                  where: {
+                    OR: [
+                      ...(data?.contact?.id
+                        ? [
+                            {
+                              id: data.contact?.id,
+                            },
+                          ]
+                        : []),
+                      ...(data?.contact?.externalId
+                        ? [
+                            {
+                              externalId: data.contact?.externalId,
+                            },
+                          ]
+                        : []),
+                      ...(data?.contact?.email
+                        ? [
+                            {
+                              email: data.contact?.email,
+                            },
+                          ]
+                        : []),
+                      ...(data?.contact?.phoneNumber
+                        ? [
+                            {
+                              phoneNumber: data.contact?.phoneNumber,
+                            },
+                          ]
+                        : []),
+                    ],
+                  },
+                },
+              }
+            : {}),
         },
       },
       tools: {
@@ -188,7 +232,26 @@ export const chatAgentRequest = async (
     throw err;
   }
 
-  const isNewConversation = !agent?.organization?.conversations?.[0]?.id;
+  const existingContact = agent?.organization?.contacts?.[0];
+  const isNewConversation = !existingContact?.id;
+  const isNewContact = !existingContact && hasContactInfo;
+
+  let contactId = existingContact?.id;
+
+  if (isNewContact) {
+    const createdContact = await prisma.contact.create({
+      data: {
+        organizationId: agent?.organizationId!,
+        externalId: data?.contact?.externalId,
+        email: data?.contact?.email,
+        phoneNumber: data?.contact?.phoneNumber,
+        firstName: data?.contact?.firstName,
+        lastName: data?.contact?.lastName,
+      },
+    });
+
+    contactId = createdContact.id;
+  }
 
   let retrievalQuery = '';
   if (data.isDraft) {
@@ -261,7 +324,7 @@ export const chatAgentRequest = async (
       attachments: data.attachments,
 
       visitorId: isDashboardMessage ? undefined : data.visitorId!,
-      contactId: isDashboardMessage ? undefined : data.contactId!,
+      contactId: isDashboardMessage ? undefined : contactId,
       userId: isDashboardMessage ? session?.user?.id : undefined,
     });
   }

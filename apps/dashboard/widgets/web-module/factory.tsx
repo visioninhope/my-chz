@@ -28,9 +28,15 @@ export const initChatBubble = async (props: {
 
   webChatBubble.setAttribute('agent-id', agentId || '');
 
+  console.log('props.contact-------------->', props.contact);
+
   if (props.contact) {
-    for (const info in props.contact) {
-      webChatBubble.setAttribute(toDashedCase(info), info || '');
+    for (const key of Object.keys(props.contact)) {
+      const val = props.contact[key as keyof typeof props.contact] as string;
+
+      if (val) {
+        webChatBubble.setAttribute(toDashedCase(key), val || '');
+      }
     }
   }
 

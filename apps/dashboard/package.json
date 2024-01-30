@@ -14,10 +14,11 @@
     "e2e:api": "jest __tests__/api",
     "e2e:api:watch": "jest __tests__/api --watch",
     "widget:chat-bubble:dev": "concurrently \"npx serve tests/chat-bubble\" \"mkdir -p tests/chat-bubble/dist && NEXT_PUBLIC_ASSETS_BASE_URL=/dist NEXT_PUBLIC_DASHBOARD_URL=http://localhost:3000 npx parcel watch widgets/chat-bubble.tsx --dist-dir tests/chat-bubble/dist\"",
-    "widget:chat-bubble:build": "NEXT_PUBLIC_ASSETS_BASE_URL=https://cdn.jsdelivr.net/npm/@databerry/chat-bubble@latest NEXT_PUBLIC_DASHBOARD_URL=https://app.chaindesk.ai npx parcel build widgets/chat-bubble.tsx",
+    "widget:chat-bubble:build": "NEXT_PUBLIC_ASSETS_BASE_URL=https://cdn.jsdelivr.net/npm/@databerry/chat-bubble@latest NEXT_PUBLIC_DASHBOARD_URL=https://app.chaindesk.ai npx parcel build widgets/chat-bubble.tsx --no-cache",
     "widget:module:chat-bubble:dev": "concurrently \"npx serve tests/web-components/chat-bubble\" \"mkdir -p tests/web-components/chat-bubble/dist && NEXT_PUBLIC_ASSETS_BASE_URL=/dist NEXT_PUBLIC_DASHBOARD_URL=http://localhost:3000 npx parcel watch widgets/web-module/inject-chatbubble.ts --dist-dir tests/web-components/chat-bubble/dist\"",
-    "widget:module:dev": "concurrently \"npx serve tests/web-module\" \"mkdir -p tests/web-module/dist && NEXT_PUBLIC_ASSETS_BASE_URL=/dist NEXT_PUBLIC_DASHBOARD_URL=http://localhost:3000 npx parcel build widgets/web-module/module.ts --dist-dir tests/web-module/dist\"",
-    "widget:module:build": "NEXT_PUBLIC_ASSETS_BASE_URL=https://cdn.jsdelivr.net/npm/@databerry/chat-bubble@latest NEXT_PUBLIC_DASHBOARD_URL=https://chaindesk.ai npx parcel build widgets/web-module/module.ts --dist-dir tests/web-module/dist ",
+    "widget:module:dev": "concurrently \"npx serve tests/web-module\" \"mkdir -p tests/web-module/dist && NEXT_PUBLIC_ASSETS_BASE_URL=/dist NEXT_PUBLIC_DASHBOARD_URL=http://localhost:3000 npx parcel build widgets/web-module/module.ts --dist-dir tests/web-module/dist --no-cache --no-source-maps\"",
+    "widget:module:build": "NEXT_PUBLIC_DASHBOARD_URL=https://chaindesk.ai npx parcel build widgets/web-module/module.ts --dist-dir tests/web-module/dist --no-cache",
+    "widget:inject:dev": "concurrently \"npx serve tests/web-components/chat-bubble\" \"NEXT_PUBLIC_DASHBOARD_URL=http://localhost:3000 npx parcel build widgets/web-module/inject-chatbubble.ts --dist-dir tests/web-components/chat-bubble/dist  \"",
     "widget:inject:build": "NEXT_PUBLIC_ASSETS_BASE_URL=https://cdn.jsdelivr.net/npm/@databerry/chat-bubble@latest NEXT_PUBLIC_DASHBOARD_URL=https://chaindesk.ai npx parcel build widgets/web-module/inject-chatbubble.ts",
     "widget:chat-bubble:publish": "npm run widget:chat-bubble:build && cp dist/chat-bubble* ../../packages/chat-bubble/ && cd ../../packages/chat-bubble && npm version patch && npm publish --access public",
     "build:widget:prestashop": "cd widgets/prestashop && bash build.sh",
@@ -35,8 +36,13 @@
   "alias": {
     "@app/components": "./components",
     "@app/hooks": "./hooks",
-    "buffer": false,
-    "process": false
+    "@app/utils": "./utils",
+    "buffer": {
+      "global": "buffer"
+    },
+    "process": {
+      "global": "process"
+    }
   },
   "dependencies": {
     "@chaindesk/emails": "workspace:*",

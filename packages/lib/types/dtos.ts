@@ -166,15 +166,27 @@ export const CreateAttachmentSchema = z.object({
 });
 export type CreateAttachmentSchema = z.infer<typeof CreateAttachmentSchema>;
 
+export const CreateContactSchema = z.object({
+  id: z.string().cuid().optional(),
+  email: z.string().email().optional(),
+  phoneNumber: z.string().optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  externalId: z.string().optional(),
+  conversationId: z.string().cuid().optional(),
+});
+
+export type CreateContactSchema = z.infer<typeof CreateContactSchema>;
+
 export const ChatRequest = ChatModelConfigSchema.extend({
   isDraft: z.boolean().optional().default(false),
   query: z.string(),
   streaming: z.boolean().optional().default(false),
   visitorId: z.union([z.string().cuid().nullish(), z.literal('')]),
-  contactId: z.union([z.string().cuid().nullish(), z.literal('')]),
   conversationId: z.union([z.string().cuid().nullish(), z.literal('')]),
   channel: z.nativeEnum(ConversationChannel).default('dashboard'),
   truncateQuery: z.boolean().optional(),
+  contact: CreateContactSchema.optional(),
 
   systemPrompt: z.string().optional(),
   userPrompt: z.string().optional(),
@@ -716,15 +728,6 @@ export const UpdateInboxConversationSchema = z.object({
 export type UpdateInboxConversationSchema = z.infer<
   typeof UpdateInboxConversationSchema
 >;
-
-export const CreateContactSchema = z.object({
-  email: z.string().email().optional(),
-  firtName: z.string().optional(),
-  lastName: z.string().optional(),
-  conversationId: z.string().cuid().optional(),
-});
-
-export type CreateContactSchema = z.infer<typeof CreateContactSchema>;
 
 export const UpdateContactSchema = CreateContactSchema;
 

@@ -1,3 +1,6 @@
+import '../../../styles/globals.css';
+import '../../../styles/preflight.css';
+
 import createCache, { EmotionCache } from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import ScopedCssBaseline from '@mui/joy/ScopedCssBaseline';
@@ -9,15 +12,15 @@ import ChatBubble, { CustomContact } from '@app/components/ChatBubble';
 import { theme, themeKeys } from '@app/utils/themes/chat-bubble';
 
 const contactAttributes = {
-  'user-id': 'id',
+  'phone-number': 'phoneNumber',
+  'external-id': 'externalId',
   'first-name': 'firstName',
   'last-name': 'lastName',
   email: 'email',
 };
 
 class WebChatBubble extends HTMLElement {
-  cssProvider =
-    (process.env.NEXT_PUBLIC_ASSETS_BASE_URL || '') + '/chat-bubble.css';
+  cssProvider = (process.env.NEXT_PUBLIC_ASSETS_BASE_URL || '') + '/module.css';
   root: Root;
   cache: EmotionCache;
   shadowRootElement: HTMLDivElement;

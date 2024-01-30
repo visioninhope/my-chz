@@ -10,15 +10,25 @@
       console.log(window.ChaindeskFactory);
 
       // you can comment this, and use the web component directly ⬇️
-      window.ChaindeskFactory.initChatBubble({
-        agentId: 'clrz0tn6h000108kxfyomdzxg',
-      });
+      // window.ChaindeskFactory.initChatBubble({
+      //   agentId: 'clrz0tn6h000108kxfyomdzxg',
+      //   contact: {
+      //     firstName: 'Georges',
+      //     email: 'georges@chaindesk.ai',
+      //     externalId: '424242',
+      //   },
+      // });
     </script>
   </head>
   <body>
     <h1>Web module: ChaindeskFactory</h1>
 
     <!-- use webcomponent directly ⬇️ -->
-    <!-- <web-chat-bubble id="local-agent-id"></web-chat-bubble> -->
+    <web-chat-bubble
+      agent-id="clrz0tn6h000108kxfyomdzxg"
+      first-name="Adam"
+      email="adam@chaindesk.ai"
+      external-id="444444"
+    ></web-chat-bubble>
   </body>
 </html>
